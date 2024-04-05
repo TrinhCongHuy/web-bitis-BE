@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     },
     phone: String,
     avatar: String,
+    address: String,
     access_token: String,
     refresh_token: String,
     deleted: {
