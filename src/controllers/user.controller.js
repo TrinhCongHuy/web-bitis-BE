@@ -168,6 +168,7 @@ module.exports.refreshToken = async (req, res) => {
 module.exports.logoutUser = async (req, res) => {
     try {
         res.clearCookie('refresh_token')
+        // localStorage.removeItem('access_token');
         return res.status(200).json({
             status: 'OK',
             message: 'Log out success'
