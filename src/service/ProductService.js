@@ -3,7 +3,7 @@ const Product = require("../models/ProductModel")
 // [POST] /create
 module.exports.createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
-        const {name, image, type, price, countInStock, rating, description} = newProduct
+        const {name, image, type, price, countInStock, rating, discount, description} = newProduct
         try {
             const checkProduct = await Product.findOne({
                 name: name
@@ -16,7 +16,7 @@ module.exports.createProduct = (newProduct) => {
                 })
             }else {
                 const createProduct = await Product.create({
-                    name, image, type, price, countInStock, rating, description
+                    name, image, type, price, countInStock, rating, discount, description
                 })
                 if (createProduct) {
                     resolve({
@@ -127,6 +127,36 @@ module.exports.deleteProduct = (id) => {
     })
 }
 
+// [PATCH] /delete-many
+module.exports.deleteManyProduct = (ids) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log('ids', ids)
+            await Product.deleteMany(
+                {
+                    _id: ids 
+                }
+            )
+            // await Product.updateMany(
+            //     {
+            //         _id: { $in: ids }
+            //     },
+            //     {
+            //         deleted: true
+            //     }
+            // )
+
+            resolve({
+                status: 'OK',
+                message: 'Delete is success'
+            })
+            
+        }catch(error) {
+            reject(e)
+        }
+    })
+}
+
 // [GET] /
 module.exports.listProduct = (page, limit, sort, filter) => {
     return new Promise(async (resolve, reject) => {
@@ -161,7 +191,7 @@ module.exports.listProduct = (page, limit, sort, filter) => {
                 })
             }
             
-            const products = await Product.find().limit(limit).skip(page * limit);
+            const products = await Product.find({deleted: false}).limit(limit).skip(page * limit);
 
             resolve({
                 status: 'OK',
@@ -170,6 +200,25 @@ module.exports.listProduct = (page, limit, sort, filter) => {
                 total: totalProduct,
                 pageCurrent: Number(page + 1),
                 totalPage: Math.ceil(totalProduct / limit)
+            })
+            
+        }catch(error) {
+            reject(e)
+        }
+    })
+}
+
+// [GET] /type-product
+module.exports.typeProduct = (page, limit, sort, filter) => {
+    return new Promise(async (resolve, reject) => {
+        try {            
+            
+            const types = await Product.distinct('type');
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: types
             })
             
         }catch(error) {

@@ -7,7 +7,10 @@ router.post('/create', controller.createProduct)
 router.patch('/update/:id', controller.updateProduct)
 router.get('/detail/:id', controller.detailProduct)
 router.delete('/delete/:id', controller.deleteProduct)
+router.post('/delete-many', controller.deleteManyProduct)
 router.get('/', controller.listProduct)
+router.get('/type-product', controller.typeProduct)
+
 
 
 

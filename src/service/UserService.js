@@ -6,13 +6,32 @@ const { generalAccessToken , generalRefreshToken} = require('./JwtService')
 module.exports.listUser = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const listUser = await User.findOne()
+            const listUser = await User.find({isAdmin: false, deleted: false})
             
             if (listUser) {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
                     data: listUser
+                })
+            }  
+        }catch(error) {
+            reject(e)
+        }
+    })
+}
+
+// [GET] /list-account
+module.exports.listAccounts = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const listAccounts = await User.find({isAdmin: true, deleted: false})
+            
+            if (listAccounts) {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: listAccounts
                 })
             }  
         }catch(error) {
@@ -49,6 +68,45 @@ module.exports.createUser = (newUser) => {
                     status: 'OK',
                     message: 'SUCCESS',
                     data: createUser
+            })
+                
+            }
+            
+        }catch(error) {
+            reject(e)
+        }
+    })
+}
+
+// [POST] /create-account
+module.exports.createAccount = (newAccount) => {
+    return new Promise(async (resolve, reject) => {
+        const { name , email, password, avatar } = newAccount
+        try {
+            const existEmail = await User.findOne({
+                email: email
+            })
+            if (existEmail !== null) {
+                resolve({
+                    status: 'OK',
+                    message: 'The email already',
+                })
+            }
+
+            const hash = bcrypt.hashSync(password, 10)
+
+            const createAccount = await User.create({
+                name,
+                email,
+                password: hash,
+                avatar,
+                isAdmin: true
+            })
+            if (createAccount) {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: createAccount
             })
                 
             }
@@ -146,7 +204,7 @@ module.exports.deleteUser = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const user = await User.findOne({
-                _id: id
+                _id: id,
             })
             if (!user) {
                 resolve({
@@ -162,6 +220,35 @@ module.exports.deleteUser = (id) => {
                     deleted: true
                 }
             )
+
+            resolve({
+                status: 'OK',
+                message: 'Delete user is success'
+            })
+            
+        }catch(error) {
+            reject(e)
+        }
+    })
+}
+
+// [DELETE] /delete-many
+module.exports.deleteManyUser = (ids) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await User.deleteMany(
+                {
+                    _id: ids 
+                }
+            )
+            // await User.updateMany(
+            //     {
+            //         _id: { $in: ids } 
+            //     },
+            //     {
+            //         deleted: true
+            //     }
+            // )
 
             resolve({
                 status: 'OK',

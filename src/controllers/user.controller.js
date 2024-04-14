@@ -14,6 +14,19 @@ module.exports.listUser = async (req, res) => {
     }
 }
 
+// [GET] /list-account
+module.exports.listAccounts = async (req, res) => {
+    try {
+        const response = await UserService.listAccounts()
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+
 // [POST] /sing-up
 module.exports.createUser = async (req, res) => {
     try {
@@ -38,6 +51,33 @@ module.exports.createUser = async (req, res) => {
         }
 
         const response = await UserService.createUser(req.body)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+// [POST] /create-account
+module.exports.createAccount = async (req, res) => {
+    try {
+        const { name , email, password, avatar } = req.body
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const isCheckEmail = regex.test(email)
+        if (!name || !email|| !password ) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The input is require'
+            })
+        }else if (!isCheckEmail) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The input is email'
+            })
+        }
+
+        const response = await UserService.createAccount(req.body)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -114,6 +154,27 @@ module.exports.deleteUser = async (req, res) => {
         }
 
         const response = await UserService.deleteUser(userId)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+// [POST] /delete-many
+module.exports.deleteManyUser = async (req, res) => {
+    try {
+        const userIds = req.body.ids
+        
+        if (!userIds) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The userId id required'
+            })
+        }
+
+        const response = await UserService.deleteManyUser(userIds)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
