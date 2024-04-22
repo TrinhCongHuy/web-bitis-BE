@@ -14,6 +14,7 @@ router.post('/delete-many', controller.deleteManyUser)
 
 
 router.get('/list-user', controller.listUser)
+router.get('/user/:id', controller.getUser)
 router.get('/list-account', controller.listAccounts)
 router.delete('/delete-user/:id', controller.deleteUser)
 router.get('/detail-user/:id', controller.detailUser)

@@ -14,6 +14,19 @@ module.exports.listUser = async (req, res) => {
     }
 }
 
+// [GET] /user/:id
+module.exports.getUser = async (req, res) => {
+    try {
+        const userId = req.params.id
+        const response = await UserService.getUser(userId)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 // [GET] /list-account
 module.exports.listAccounts = async (req, res) => {
     try {
@@ -25,7 +38,6 @@ module.exports.listAccounts = async (req, res) => {
         })
     }
 }
-
 
 // [POST] /sing-up
 module.exports.createUser = async (req, res) => {

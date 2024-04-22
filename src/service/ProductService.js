@@ -209,7 +209,7 @@ module.exports.listProduct = (page, limit, sort, filter) => {
 }
 
 // [GET] /type-product
-module.exports.typeProduct = (page, limit, sort, filter) => {
+module.exports.typeProduct = () => {
     return new Promise(async (resolve, reject) => {
         try {            
             

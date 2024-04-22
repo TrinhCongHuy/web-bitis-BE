@@ -5,9 +5,12 @@ const orderSchema = new mongoose.Schema({
         {
             name: String,
             amount: Number,
+            discount: Number,
             image: String,
             price: Number,
-            products: {
+            quantity: Number,
+            totalPrice: Number,
+            product: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Product'
             },
@@ -21,16 +24,14 @@ const orderSchema = new mongoose.Schema({
         }
     ],
     shippingAddress: {
-        fullName: String,
+        name: String,
         address: String,
-        city: String,
+        specificLocation: String,
         phone: Number
     },
     paymentMethod: String,
-    itemsPrice: Number,
     shippingPrice: Number,
-    taxPrice: Number,
-    totalPrice: Number,
+    totalPay: Number,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

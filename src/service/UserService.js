@@ -21,6 +21,25 @@ module.exports.listUser = () => {
     })
 }
 
+// [GET] /user/:id
+module.exports.getUser = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await User.findOne({_id: userId, deleted: false})
+            
+            if (user) {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: user
+                })
+            }  
+        }catch(error) {
+            reject(e)
+        }
+    })
+}
+
 // [GET] /list-account
 module.exports.listAccounts = () => {
     return new Promise(async (resolve, reject) => {

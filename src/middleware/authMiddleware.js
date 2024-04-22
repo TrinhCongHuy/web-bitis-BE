@@ -10,14 +10,20 @@ module.exports.authMiddleware = (req, res, next) => {
                 status: 'ERROR'
             })
         }
-        const {payload} = user
-        if (payload.isAdmin) {
-            next()
-        }else {
-            return res.status(404).json({
-                message: 'The authentication',
-                status: 'ERROR'
-            })
-        }
+
+        const userId = user.id;
+
+        req.userId = userId;
+
+        next()
+
+        // if (payload.isAdmin) {
+        //     next()
+        // }else {
+        //     return res.status(404).json({
+        //         message: 'The authentication',
+        //         status: 'ERROR'
+        //     })
+        // }
     });
 }

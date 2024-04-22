@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+const addressSchema = new mongoose.Schema({
+    recipientName: String,
+    phoneNumber: String,
+    overallAddress: String,
+    specificLocation: String,
+    isDefault: {
+        type: Boolean,
+        default: false
+    }
+});
+
 const userSchema = new mongoose.Schema({  
     name: String,
     email: String,
@@ -10,7 +21,7 @@ const userSchema = new mongoose.Schema({
     },
     phone: String,
     avatar: String,
-    address: String,
+    address: [addressSchema],
     access_token: String,
     refresh_token: String,
     deleted: {
