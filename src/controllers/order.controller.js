@@ -1,10 +1,10 @@
-const OrderService = require('../service//OrderService')
+const OrderService = require('../service/OrderService')
 
 
 // [POST] /create
 module.exports.createOrder = async (req, res) => {
     try {
-        const { orderItems, shippingAddress, paymentMethod, shippingPrice, totalPay, user } = req.body;
+        const { orderItems, shippingAddress, paymentMethod, shippingPrice, totalPay, user, deliveryMethod, isPaid, paidAt, email } = req.body;
         if (!orderItems || !shippingAddress || !paymentMethod || !shippingPrice || !totalPay || !user) {
             return res.status(400).json({
                 status: 'ERR',
@@ -30,7 +30,11 @@ module.exports.createOrder = async (req, res) => {
             paymentMethod,
             shippingPrice,
             totalPay,
-            user
+            user,
+            deliveryMethod,
+            isPaid, 
+            paidAt,
+            email
         };
 
         const response = await OrderService.createOrder(orderData);
@@ -42,3 +46,56 @@ module.exports.createOrder = async (req, res) => {
         });
     }
 };
+
+
+// [GET] /listProductOrder
+module.exports.listProductOrder = async (req, res) => {
+    try {
+        const userId = req.params.id
+        const response = await OrderService.listProductOrder(userId)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+// [GET] /orderDetail
+module.exports.orderDetail = async (req, res) => {
+    try {
+        const userId = req.params.id
+        const response = await OrderService.orderDetail(userId)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+
+// [GET] /getAllOrder
+module.exports.getAllOrder = async (req, res) => {
+    try {
+        const response = await OrderService.getAllOrder()
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+// [DELETE] /deleteOrder/:id
+module.exports.deleteOrder = async (req, res) => {
+    try {
+        const userId = req.params.id
+        const response = await OrderService.deleteOrder(userId)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}

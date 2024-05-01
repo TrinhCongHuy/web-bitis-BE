@@ -1,18 +1,18 @@
-const User = require('../models/UserModel')
+const Account = require('../models/accountModel')
 const bcrypt = require('bcrypt');
 const { generalAccessToken , generalRefreshToken} = require('./JwtService')
 
-// [GET] /list-user
-module.exports.listUser = () => {
+// [GET] /list-account
+module.exports.listAccount = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const listUser = await User.find({isAdmin: false, deleted: false})
+            const listAccount = await Account.find({deleted: false})
             
-            if (listUser) {
+            if (listAccount) {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: listUser
+                    data: listAccount
                 })
             }  
         }catch(error) {
@@ -21,17 +21,17 @@ module.exports.listUser = () => {
     })
 }
 
-// [GET] /user/:id
-module.exports.getUser = (userId) => {
+// [GET] /account/:id
+module.exports.getAccount = (accountId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await User.findOne({_id: userId, deleted: false})
+            const account = await Account.findOne({_id: accountId, deleted: false})
             
-            if (user) {
+            if (account) {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: user
+                    data: account
                 })
             }  
         }catch(error) {
@@ -40,12 +40,12 @@ module.exports.getUser = (userId) => {
     })
 }
 
-// [POST] /sing-up
-module.exports.createUser = (newUser) => {
+// [POST] /create-account
+module.exports.createAccount = (newAccount) => {
     return new Promise(async (resolve, reject) => {
-        const { name , email, password, confirmPassword, phone } = newUser
+        const { name , email, password, phone, role_id, avatar } = newAccount
         try {
-            const existEmail = await User.findOne({
+            const existEmail = await Account.findOne({
                 email: email
             })
             if (existEmail !== null) {
@@ -57,17 +57,19 @@ module.exports.createUser = (newUser) => {
 
             const hash = bcrypt.hashSync(password, 10)
 
-            const createUser = await User.create({
+            const createAccount = await Account.create({
                 name,
                 email,
                 password: hash,
-                phone
+                phone, 
+                role_id,
+                avatar,
             })
-            if (createUser) {
+            if (createAccount) {
                 resolve({
                     status: 'OK',
                     message: 'SUCCESS',
-                    data: createUser
+                    data: createAccount
             })
                 
             }
@@ -78,41 +80,38 @@ module.exports.createUser = (newUser) => {
     })
 }
 
-
 // [POST] /sing-in
-module.exports.loginUser = async (infoUser) => {
+module.exports.loginAccount = async (infoAccount) => {
     return new Promise(async (resolve, reject) => {
-        const { email, password } = infoUser
+        const { email, password } = infoAccount
         try {
-            const user = await User.findOne({
+            const account = await Account.findOne({
                 email: email,
                 deleted: false
             });
 
-            if (user === null) {
+            if (account === null) {
                 return resolve({
                     status: 'ERR',
                     message: 'The email is not defined',
                 })
             }
 
-            const passwordMatch = bcrypt.compareSync(password, user.password);
+            const passwordMatch = bcrypt.compareSync(password, account.password);
             if (!passwordMatch) {
                 return resolve({
                     status: 'ERR',
-                    message: 'The password or user is incorrect',
+                    message: 'The password or account is incorrect',
                 });
             }
             
             // access_token
             const access_token = await generalAccessToken({
-                id: user._id,
-                isAdmin: user.isAdmin
+                id: account._id,
             })
             // refresh_token
             const refresh_token = await generalRefreshToken({
-                id: user._id,
-                isAdmin: user.isAdmin
+                id: account._id,
             })
             resolve({
                 status: 'OK',
@@ -128,31 +127,31 @@ module.exports.loginUser = async (infoUser) => {
 }
 
 // [PATCH] /update-user/:id
-module.exports.updateUser = (id, data) => {
+module.exports.updateAccount = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await User.findOne({
+            const account = await Account.findOne({
                 _id: id
             })
-            if (!user) {
+            if (!account) {
                 resolve({
                     status: 'ERR',
-                    message: 'The user is not defined',
+                    message: 'The account is not defined',
                 })
             }
-            await User.updateOne(
+            await Account.updateOne(
                 {
                     _id: id
                 },
                 data
             )
 
-            const newUser = await User.findOne({_id: id})
+            const newAccount = await Account.findOne({_id: id})
 
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
-                data: newUser
+                data: newAccount
             })
             
         }catch(error) {
@@ -161,20 +160,20 @@ module.exports.updateUser = (id, data) => {
     })
 }
 
-// [DELETE] /delete-user/:id
-module.exports.deleteUser = (id) => {
+// [DELETE] /delete-account/:id
+module.exports.deleteAccount = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await User.findOne({
+            const account = await Account.findOne({
                 _id: id,
             })
-            if (!user) {
+            if (!account) {
                 resolve({
                     status: 'OK',
-                    message: 'The user is not defined',
+                    message: 'The account is not defined',
                 })
             }
-            await User.updateOne(
+            await Account.updateOne(
                 {
                     _id: id
                 },
@@ -185,7 +184,7 @@ module.exports.deleteUser = (id) => {
 
             resolve({
                 status: 'OK',
-                message: 'Delete user is success'
+                message: 'Delete account is success'
             })
             
         }catch(error) {
@@ -195,15 +194,15 @@ module.exports.deleteUser = (id) => {
 }
 
 // [DELETE] /delete-many
-module.exports.deleteManyUser = (ids) => {
+module.exports.deleteManyAccount = (ids) => {
     return new Promise(async (resolve, reject) => {
         try {
-            await User.deleteMany(
+            await Account.deleteMany(
                 {
                     _id: ids 
                 }
             )
-            // await User.updateMany(
+            // await Account.updateMany(
             //     {
             //         _id: { $in: ids } 
             //     },
@@ -214,7 +213,7 @@ module.exports.deleteManyUser = (ids) => {
 
             resolve({
                 status: 'OK',
-                message: 'Delete user is success'
+                message: 'Delete account is success'
             })
             
         }catch(error) {
@@ -223,26 +222,26 @@ module.exports.deleteManyUser = (ids) => {
     })
 }
 
-// [GET] /detail-user/:id
-module.exports.detailUser = (id) => {
+// [GET] /detail-account/:id
+module.exports.detailAccount = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const user = await User.findOne({
+            const account = await Account.findOne({
                 _id: id,
                 deleted: false
             }).select("-password")
 
-            if (!user) {
+            if (!account) {
                 resolve({
                     status: 'OK',
-                    message: 'The user is not defined',
+                    message: 'The account is not defined',
                 })
             }
 
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
-                data: user
+                data: account
             })
             
         }catch(error) {

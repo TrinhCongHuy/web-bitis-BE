@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
     phone: String,
     avatar: String,
     address: [addressSchema],
+    type: {
+        type: String,
+        default: "LOCAL"
+    },
     access_token: String,
     refresh_token: String,
     deleted: {

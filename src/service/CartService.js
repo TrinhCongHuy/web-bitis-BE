@@ -21,6 +21,7 @@ module.exports.listProductCart = async (userId) => {
                         detailedProducts.push({
                             _id: productDetail._id,
                             name: productDetail.name,
+                            image: productDetail.image,
                             price: productDetail.price,
                             quantity: product.quantity,
                             discount: productDetail.discount

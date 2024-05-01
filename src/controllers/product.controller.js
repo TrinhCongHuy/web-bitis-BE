@@ -4,14 +4,20 @@ const ProductService = require('../service/ProductService')
 // [POST] /create
 module.exports.createProduct = async (req, res) => {
     try {
-        const {name, image, type, price, countInStock, rating, discount, description} = req.body
+        const {name, type, price, countInStock, rating, discount, description} = req.body
+        const image = req.file;
         if ( !name || !image || !type || !price || !countInStock || !rating || !discount ) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is require'
             })
         }
-        const response = await ProductService.createProduct(req.body)
+        const response = await ProductService.createProduct(
+            {
+                name, type, price, countInStock, rating, discount, description,
+                image: image.path
+            }
+        )
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -24,7 +30,8 @@ module.exports.createProduct = async (req, res) => {
 module.exports.updateProduct = async (req, res) => {
     try {
         const productId = req.params.id
-        const data = req.body
+        const {name, type, price, countInStock, rating, discount, description} = req.body
+        const image = req.file;
         
         if (!productId) {
             return res.status(200).json({
@@ -33,7 +40,9 @@ module.exports.updateProduct = async (req, res) => {
             })
         }
 
-        const response = await ProductService.updateProduct(productId, data)
+        const response = await ProductService.updateProduct(productId, {
+            name, type, price, countInStock, rating, discount, description, image: image.path
+        })
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({

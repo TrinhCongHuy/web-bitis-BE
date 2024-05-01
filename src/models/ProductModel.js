@@ -9,6 +9,7 @@ const productSchema = new mongoose.Schema({
     countInStock: Number,
     rating: Number,
     description: String,
+    sold: Number,
     deleted: {
         type: Boolean,
         default: false

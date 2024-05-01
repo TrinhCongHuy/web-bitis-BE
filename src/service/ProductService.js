@@ -16,7 +16,7 @@ module.exports.createProduct = (newProduct) => {
                 })
             }else {
                 const createProduct = await Product.create({
-                    name, image, type, price, countInStock, rating, discount, description
+                    name, image, type, price, countInStock, rating, discount, description, sold: 0
                 })
                 if (createProduct) {
                     resolve({
@@ -137,14 +137,6 @@ module.exports.deleteManyProduct = (ids) => {
                     _id: ids 
                 }
             )
-            // await Product.updateMany(
-            //     {
-            //         _id: { $in: ids }
-            //     },
-            //     {
-            //         deleted: true
-            //     }
-            // )
 
             resolve({
                 status: 'OK',

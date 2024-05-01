@@ -1,11 +1,11 @@
-const UserService = require('../service/UserService')
+const AccountService = require('../service/AccountService')
 const JwtService = require('../service/JwtService')
 
 
-// [GET] /list-user
-module.exports.listUser = async (req, res) => {
+// [GET] /list-account
+module.exports.listAccount = async (req, res) => {
     try {
-        const response = await UserService.listUser()
+        const response = await AccountService.listAccount()
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -14,11 +14,11 @@ module.exports.listUser = async (req, res) => {
     }
 }
 
-// [GET] /user/:id
-module.exports.getUser = async (req, res) => {
+// [GET] /account/:id
+module.exports.getAccount = async (req, res) => {
     try {
-        const userId = req.params.id
-        const response = await UserService.getUser(userId)
+        const accountId = req.params.id
+        const response = await AccountService.getAccount(accountId)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -27,13 +27,14 @@ module.exports.getUser = async (req, res) => {
     }
 }
 
-// [POST] /sing-up
-module.exports.createUser = async (req, res) => {
+// [POST] /create-account
+module.exports.createAccount = async (req, res) => {
     try {
-        const { name , email, password, confirmPassword, phone } = req.body
+        const { name , email, password, phone, role_id } = req.body
+        const avatar = req.file
         const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const isCheckEmail = regex.test(email)
-        if (!name || !email|| !password|| !confirmPassword ) {
+        if (!name || !email|| !password || !phone || !role_id) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is require'
@@ -43,14 +44,12 @@ module.exports.createUser = async (req, res) => {
                 status: 'ERR',
                 message: 'The input is email'
             })
-        }else if (password !== confirmPassword) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The password is equal confirmPassword'
-            })
         }
 
-        const response = await UserService.createUser(req.body)
+        const response = await AccountService.createAccount({
+            name , email, password, phone, role_id,
+            avatar: avatar.path
+        })
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -60,7 +59,7 @@ module.exports.createUser = async (req, res) => {
 }
 
 // [POST] /sing-in
-module.exports.loginUser = async (req, res) => {
+module.exports.loginAccount = async (req, res) => {
     try {
         const { email, password } = req.body
         const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -77,7 +76,7 @@ module.exports.loginUser = async (req, res) => {
             })
         }
 
-        const response = await UserService.loginUser(req.body)
+        const response = await AccountService.loginAccount(req.body)
         const { refresh_token, ...newRepose } = response
         res.cookie('refresh_token', refresh_token, {
             httpOnly: true,
@@ -92,20 +91,20 @@ module.exports.loginUser = async (req, res) => {
     }
 }
 
-// [PATCH] /update-user/:id
-module.exports.updateUser = async (req, res) => {
+// [PATCH] /update-account/:id
+module.exports.updateAccount = async (req, res) => {
     try {
-        const userId = req.params.id
+        const accountId = req.params.id
         const data = req.body
         
-        if (!userId) {
+        if (!accountId) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The userId id required'
+                message: 'The accountId id required'
             })
         }
 
-        const response = await UserService.updateUser(userId, data)
+        const response = await AccountService.updateAccount(accountId, data)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -114,19 +113,19 @@ module.exports.updateUser = async (req, res) => {
     }
 }
 
-// [DELETE] /delete-user/:id
-module.exports.deleteUser = async (req, res) => {
+// [DELETE] /delete-account/:id
+module.exports.deleteAccount = async (req, res) => {
     try {
-        const userId = req.params.id
+        const accountId = req.params.id
         
-        if (!userId) {
+        if (!accountId) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The userId id required'
+                message: 'The accountId id required'
             })
         }
 
-        const response = await UserService.deleteUser(userId)
+        const response = await AccountService.deleteAccount(accountId)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -136,18 +135,18 @@ module.exports.deleteUser = async (req, res) => {
 }
 
 // [POST] /delete-many
-module.exports.deleteManyUser = async (req, res) => {
+module.exports.deleteManyAccount = async (req, res) => {
     try {
-        const userIds = req.body.ids
+        const accountIds = req.body.ids
         
-        if (!userIds) {
+        if (!accountIds) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The userId id required'
+                message: 'The accountId id required'
             })
         }
 
-        const response = await UserService.deleteManyUser(userIds)
+        const response = await AccountService.deleteManyAccount(accountIds)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -156,19 +155,19 @@ module.exports.deleteManyUser = async (req, res) => {
     }
 }
 
-// [GET] /detail-user/:id
-module.exports.detailUser = async (req, res) => {
+// [GET] /detail-account/:id
+module.exports.detailAccount = async (req, res) => {
     try {
-        const userId = req.params.id
+        const accountId = req.params.id
         
-        if (!userId) {
+        if (!accountId) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The userId id required'
+                message: 'The accountId id required'
             })
         }
 
-        const response = await UserService.detailUser(userId)
+        const response = await AccountService.detailAccount(accountId)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -199,7 +198,7 @@ module.exports.refreshToken = async (req, res) => {
 }
 
 // [POST] /log-out
-module.exports.logoutUser = async (req, res) => {
+module.exports.logoutAccount = async (req, res) => {
     try {
         res.clearCookie('refresh_token')
         // localStorage.removeItem('access_token');
