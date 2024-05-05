@@ -1,9 +1,12 @@
 const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema({
-    content: String,
-    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    timestamp: Date,
+    id: String,
+    body: String,
+    username: String,
+    userId: String,
+    parentId: { type: String, default: null },
+    createdAt: Date,
 });
 
 const postSchema = new mongoose.Schema({  

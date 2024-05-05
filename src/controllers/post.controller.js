@@ -58,6 +58,19 @@ module.exports.updatePost = async (req, res) => {
     }
 }
 
+module.exports.updateCommentPost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const response = await PostService.updateCommentPost(postId, req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        });
+    }
+}
+
 
 // [GET] /detail/:id
 module.exports.detailPost = async (req, res) => {
@@ -105,7 +118,6 @@ module.exports.deletePost = async (req, res) => {
 module.exports.deleteManyPost = async (req, res) => {
     try {
         const postIds = req.body.ids
-        console.log('postIds', postIds)
         
         if (!postIds) {
             return res.status(200).json({

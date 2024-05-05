@@ -16,7 +16,7 @@ module.exports.listUser = () => {
                 })
             }  
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -35,7 +35,7 @@ module.exports.getUser = (userId) => {
                 })
             }  
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -73,7 +73,7 @@ module.exports.createUser = (newUser) => {
             }
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -156,7 +156,7 @@ module.exports.updateUser = (id, data) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -189,7 +189,7 @@ module.exports.deleteUser = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }

@@ -50,7 +50,30 @@ module.exports.updatePost = (id, data) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
+        }
+    })
+}
+
+// [PATCH] /update/:id
+module.exports.updateCommentPost = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await Post.findByIdAndUpdate(
+                {_id: id},
+                data
+            );
+
+            const newPost = await Post.findOne({_id: id})
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: newPost
+            })
+            
+        }catch(error) {
+            reject(error)
         }
     })
 }
