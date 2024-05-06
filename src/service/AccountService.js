@@ -16,7 +16,7 @@ module.exports.listAccount = () => {
                 })
             }  
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -35,7 +35,7 @@ module.exports.getAccount = (accountId) => {
                 })
             }  
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -75,7 +75,7 @@ module.exports.createAccount = (newAccount) => {
             }
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -155,7 +155,7 @@ module.exports.updateAccount = (id, data) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -188,7 +188,7 @@ module.exports.deleteAccount = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -217,7 +217,7 @@ module.exports.deleteManyAccount = (ids) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -245,7 +245,7 @@ module.exports.detailAccount = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }

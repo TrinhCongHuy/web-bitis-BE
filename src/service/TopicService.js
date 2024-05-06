@@ -27,7 +27,7 @@ module.exports.createTopic = (newTopic) => {
                 }
             }
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -61,7 +61,7 @@ module.exports.updateTopic = (id, data) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -87,7 +87,7 @@ module.exports.detailTopic = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -117,7 +117,7 @@ module.exports.deleteTopic = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -139,7 +139,7 @@ module.exports.deleteManyTopic = (ids) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -157,7 +157,7 @@ module.exports.listTopic = () => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }

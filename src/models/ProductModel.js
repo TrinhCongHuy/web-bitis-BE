@@ -6,10 +6,19 @@ const productSchema = new mongoose.Schema({
     type: String,
     price: Number,
     discount: Number,
+    sizes: [{
+        sizeType: Number, 
+        quantity: Number,
+    }],
     countInStock: Number,
     rating: Number,
     description: String,
     sold: Number,
+    brand: String,
+    status: {
+        type: Boolean,
+        default: true
+    },
     deleted: {
         type: Boolean,
         default: false

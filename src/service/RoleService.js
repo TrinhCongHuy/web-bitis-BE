@@ -14,7 +14,7 @@ module.exports.listRole = () => {
                 })
             }  
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -33,7 +33,7 @@ module.exports.getRole = (roleId) => {
                 })
             }  
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -56,7 +56,7 @@ module.exports.createRole = (newRole) => {
             }
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -84,7 +84,7 @@ module.exports.updateRole = (data) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -117,7 +117,7 @@ module.exports.deleteRole = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -137,7 +137,7 @@ module.exports.deleteManyRole = (ids) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -165,7 +165,7 @@ module.exports.detailRole = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }

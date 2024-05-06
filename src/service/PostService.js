@@ -6,7 +6,7 @@ module.exports.createPost = (newPost) => {
         const {title, topic,description, content, image} = newPost
         try {
             const createPost = await Post.create({
-                title, topic,description, content, image
+                title, topic, description, content, image
             })
             if (createPost) {
                 resolve({
@@ -16,7 +16,7 @@ module.exports.createPost = (newPost) => {
                 })
             }
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -99,7 +99,7 @@ module.exports.detailPost = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -129,7 +129,7 @@ module.exports.deletePost = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -150,7 +150,7 @@ module.exports.deleteManyPost = (ids) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -168,7 +168,7 @@ module.exports.listPost = () => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }

@@ -121,8 +121,8 @@ module.exports.loginUser = async (infoUser) => {
                 refresh_token
             })
             
-        }catch(e) {
-            reject(e)
+        }catch(error) {
+            reject(error)
         }
     })
 }
@@ -203,14 +203,6 @@ module.exports.deleteManyUser = (ids) => {
                     _id: ids 
                 }
             )
-            // await User.updateMany(
-            //     {
-            //         _id: { $in: ids } 
-            //     },
-            //     {
-            //         deleted: true
-            //     }
-            // )
 
             resolve({
                 status: 'OK',
@@ -246,7 +238,7 @@ module.exports.detailUser = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }

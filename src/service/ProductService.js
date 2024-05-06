@@ -27,7 +27,7 @@ module.exports.createProduct = (newProduct) => {
                 }
             }
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -62,7 +62,7 @@ module.exports.updateProduct = (id, data) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -89,7 +89,7 @@ module.exports.detailProduct = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -122,7 +122,7 @@ module.exports.deleteProduct = (id) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -144,7 +144,7 @@ module.exports.deleteManyProduct = (ids) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -195,7 +195,7 @@ module.exports.listProduct = (page, limit, sort, filter) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
@@ -214,7 +214,7 @@ module.exports.typeProduct = () => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }
