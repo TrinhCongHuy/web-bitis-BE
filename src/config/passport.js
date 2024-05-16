@@ -1,7 +1,7 @@
 const passport = require('passport');
 const dotenv = require('dotenv');
 dotenv.config();
-const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 // const { Strategy: FacebookStrategy } = require('passport-facebook');
 const authController = require("../controllers/auth.controller");
 
@@ -10,20 +10,21 @@ module.exports.configLoginWithGG = () => {
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.CALLBACK_URL_GG,
+    callbackURL: "http://localhost:3000/api/v1/auth/google/callback",
     passReqToCallback: true
   },
-  
-    async function(req, accessToken, refreshToken, profile, cb) {
-      const typeAcc = "Google";
-      const dataRaw = {
-        name: profile.displayName,
-        email: profile.emails && profile.emails.length > 0 ? profile.emails[0].value : "",
-        avatar: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : profile.id
-      }
 
-      let user = await authController.upsertUserSocialMedia(req, typeAcc, dataRaw)
-      return cb(null, user)
+    function(req, accessToken, refreshToken, profile, cb) {
+      // const typeAcc = "Google";
+      console.log('profile', profile)
+      // const dataRaw = {
+      //   name: profile.displayName,
+      //   email: profile.emails && profile.emails.length > 0 ? profile.emails[0].value : "",
+      //   avatar: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : profile.id
+      // }
+
+      // let user = await authController.upsertUserSocialMedia(req, typeAcc, dataRaw)
+      // return cb(null, user)
     }
   ));
 

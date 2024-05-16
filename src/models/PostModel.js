@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const slug = require('mongoose-slug-updater')
+
 
 const commentSchema = new mongoose.Schema({
     id: String,
@@ -21,6 +23,7 @@ const postSchema = new mongoose.Schema({
     },
     image: String,
     comments: [commentSchema],
+    slug: { type: String, slug: "topic" },
     deleted: {
         type: Boolean,
         default: false

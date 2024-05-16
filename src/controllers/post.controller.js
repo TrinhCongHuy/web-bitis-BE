@@ -29,6 +29,7 @@ module.exports.createPost = async (req, res) => {
     }
 }
 
+// [PATCH] /update/:id
 module.exports.updatePost = async (req, res) => {
     try {
         const postId = req.params.id;
@@ -58,6 +59,7 @@ module.exports.updatePost = async (req, res) => {
     }
 }
 
+// [PATCH] /update-comment/:id
 module.exports.updateCommentPost = async (req, res) => {
     try {
         const postId = req.params.id;
@@ -138,7 +140,8 @@ module.exports.deleteManyPost = async (req, res) => {
 // [GET] /
 module.exports.listPost = async (req, res) => {
     try {
-        const response = await PostService.listPost()
+        const {limit} = req.query
+        const response = await PostService.listPost(Number(limit) || 3)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({

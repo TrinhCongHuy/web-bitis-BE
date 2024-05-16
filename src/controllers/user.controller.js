@@ -213,3 +213,69 @@ module.exports.logoutUser = async (req, res) => {
         })
     }
 }
+
+
+// [POST] /forgot-password/
+module.exports.forgotPasswordPost = async (req, res) => {
+    try {
+        const data = req.body
+        
+        if (!data) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The email is require'
+            })
+        }
+
+        const response = await UserService.forgotPasswordPost(data)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+
+
+// [POST] /forgot-password/
+module.exports.otpPasswordPost = async (req, res) => {
+    try {
+        const data = req.body
+        
+        if (!data) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The email is require'
+            })
+        }
+
+        const response = await UserService.otpPasswordPost(data)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+// [POST] /reset-password/
+module.exports.resetPasswordPost = async (req, res) => {
+    try {
+        const data = req.body
+        
+        if (!data) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The email is require'
+            })
+        }
+
+        const response = await UserService.resetPasswordPost(data)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}

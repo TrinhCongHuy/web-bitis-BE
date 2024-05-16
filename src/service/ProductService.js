@@ -3,7 +3,7 @@ const Product = require("../models/ProductModel")
 // [POST] /create
 module.exports.createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
-        const {name, image, type, price, countInStock, rating, discount, description} = newProduct
+        const {name, images, type, price, countInStock, rating, discount, description} = newProduct
         try {
             const checkProduct = await Product.findOne({
                 name: name
@@ -16,7 +16,7 @@ module.exports.createProduct = (newProduct) => {
                 })
             }else {
                 const createProduct = await Product.create({
-                    name, image, type, price, countInStock, rating, discount, description, sold: 0
+                    name, images, type, price, countInStock, rating, discount, description, sold: 0
                 })
                 if (createProduct) {
                     resolve({
@@ -52,6 +52,29 @@ module.exports.updateProduct = (id, data) => {
                 },
                 data
             )
+
+            const newProduct = await Product.findOne({_id: id})
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: newProduct
+            })
+            
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
+
+// [PATCH] /update-comment/:id
+module.exports.updateCommentProduct = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await Product.findByIdAndUpdate(
+                {_id: id},
+                data
+            );
 
             const newProduct = await Product.findOne({_id: id})
 

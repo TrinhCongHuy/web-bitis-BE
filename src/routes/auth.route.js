@@ -1,29 +1,18 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
-const session = require('express-session');
 const controller = require('../controllers/auth.controller')
 
 function isLoggedIn(req, res, next) {
+  console.log('req', req)
   if (req.user) {
     console.log('req.user', req.user)
     res.redirect("/");
   } else {
     res.sendStatus(401);
   }
+  next()
 }
-
-// Sử dụng middleware session
-router.use(session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: true
-}));
-
-// Sử dụng middleware Passport.js
-router.use(passport.initialize());
-router.use(passport.session());
-
 
 // Login with google
 router.get("/google", passport.authenticate("google", { scope: ["email", "profile"] }));

@@ -1,5 +1,8 @@
 const User = require('../models/UserModel')
 const bcrypt = require('bcrypt');
+const ForgotPassword = require('../models/forgot-password');
+const generate = require('../helpers/generate')
+const sendMailHelper = require('../helpers/sendMail')
 const { generalAccessToken , generalRefreshToken} = require('./JwtService')
 
 // [GET] /list-user
@@ -235,6 +238,115 @@ module.exports.detailUser = (id) => {
                 status: 'OK',
                 message: 'SUCCESS',
                 data: user
+            })
+            
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
+
+
+// [POST] /forgot-password
+module.exports.forgotPasswordPost = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        const { email } = data
+        try {
+            const user = await User.findOne({
+                email: email,
+                deleted: false
+            });
+
+            if (user === null) {
+                return resolve({
+                    status: 'ERR',
+                    message: 'The email is not defined',
+                })
+            }
+
+            const otp = generate.generateRandomNumber(6)
+
+            const objectForgotPassword = {
+                email: email,
+                otp: otp,
+                expireAt: Date.now()
+            }
+            
+            const forgotPassword = new ForgotPassword(objectForgotPassword)
+            await forgotPassword.save()
+
+            const subject = "Mã OTP xác minh lấy lại mật khẩu!"
+            const html = `Mã OTP lấy lại mật khẩu là ${otp}. Thời hạn sử dụng là 3 phút. Lưu ý: Không để lộ mã OTP.`
+
+            sendMailHelper.sendMail(email, subject, html)
+
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+            })
+            
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
+
+// [POST] /otp-password
+module.exports.otpPasswordPost = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        const { email, otp } = data
+        try {
+            const accuracyOtp = await ForgotPassword.findOne({
+                email: email,
+                otp: otp
+            });
+
+            if (accuracyOtp === null) {
+                return resolve({
+                    status: 'ERR',
+                    message: 'The otp is not defined',
+                })
+            }
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+            })
+            
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
+
+
+// [POST] /otp-password
+module.exports.resetPasswordPost = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        const { email, password, confirmPassword } = data
+
+        if (password != confirmPassword) {
+            res.redirect("back")
+            return;
+        }
+
+        try {
+            const hash = bcrypt.hashSync(password, 10)
+
+            await User.updateOne(
+                {
+                    email: email,
+                    deleted: false
+                }, 
+                {
+                    password: hash
+                }
+            )
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
             })
             
         }catch(error) {

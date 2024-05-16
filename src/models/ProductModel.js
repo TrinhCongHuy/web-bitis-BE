@@ -1,8 +1,17 @@
 const mongoose = require("mongoose");
 
+const commentSchema = new mongoose.Schema({
+    id: String,
+    body: String,
+    username: String,
+    userId: String,
+    parentId: { type: String, default: null },
+    createdAt: Date,
+});
+
 const productSchema = new mongoose.Schema({  
     name: String,
-    image: String,
+    images: [],
     type: String,
     price: Number,
     discount: Number,
@@ -15,6 +24,7 @@ const productSchema = new mongoose.Schema({
     description: String,
     sold: Number,
     brand: String,
+    comments: [commentSchema],
     status: {
         type: Boolean,
         default: true

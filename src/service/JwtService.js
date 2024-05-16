@@ -38,7 +38,7 @@ module.exports.refreshTokenJwtService = (token) => {
             })
             
         }catch(error) {
-            reject(e)
+            reject(error)
         }
     })
 }

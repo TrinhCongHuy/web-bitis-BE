@@ -10,6 +10,14 @@ router.patch('/update-user/:id', controller.updateUser)
 router.post('/refresh-token', controller.refreshToken)
 router.post('/delete-many', controller.deleteManyUser)
 
+router.post('/forgot-password', controller.forgotPasswordPost)
+router.post('/otp-password', controller.otpPasswordPost)
+router.post('/reset-password', controller.resetPasswordPost)
+
+
+
+
+
 
 
 router.get('/list-user', controller.listUser)

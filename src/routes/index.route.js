@@ -8,10 +8,8 @@ const topicRoute = require('./topic.route')
 const postRoute = require('./post.route')
 const accountRoute = require('./account.route')
 const roleRoute = require('./role.route')
-
-
-
-
+const chatRoute = require('./chat.route');
+const couponRoute = require('./coupon.route');
 
 
 
@@ -27,6 +25,9 @@ module.exports = (app) => {
     app.use(version + '/posts', postRoute)
     app.use(version + '/account', accountRoute)
     app.use(version + '/role', roleRoute)
+    app.use(version + '/chat', chatRoute)
+    app.use(version + '/coupon', couponRoute)
+
 
 
 }

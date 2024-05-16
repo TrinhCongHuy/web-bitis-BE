@@ -21,7 +21,7 @@ module.exports.listProductCart = async (userId) => {
                         detailedProducts.push({
                             _id: productDetail._id,
                             name: productDetail.name,
-                            image: productDetail.image,
+                            images: productDetail.images,
                             price: productDetail.price,
                             quantity: product.quantity,
                             discount: productDetail.discount
@@ -40,6 +40,27 @@ module.exports.listProductCart = async (userId) => {
                     message: 'Cart not found for the user'
                 });
             }
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
+// [GET] /countProductCart
+module.exports.countProductCart = async (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const userCart  = await Cart.countDocuments({user_id: userId})
+
+            const countProductsInCart = userCart.products.length;
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: countProductsInCart
+            });
+        
         } catch (error) {
             reject(error);
         }

@@ -1,46 +1,58 @@
 const express = require('express')
 require('dotenv').config()
-const cors = require('cors')
 const database = require('./src/config/database')
 const route = require('./src/routes/index.route')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const cookieParser = require('cookie-parser')
-const passport = require('passport') 
 const { configLoginWithGG } = require('./src/config/passport') 
-
+const http = require('http');
+const socketIo = require('socket.io');
 
 database.connect()
 const app = express()
+const server = http.createServer(app);
+const io = socketIo(server);
 const port = process.env.PORT || 3001
 
-const allowedOrigins = ['http://localhost:3000'];
+io.on('connection', (socket) => {
+  console.log('A user connected');
 
-// Thiết lập session middleware
-app.use(require('express-session')({ 
-  secret: 'mysecret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false }
-}));
+    socket.on('message', (msg) => {
+        // Gửi tin nhắn từ client tới admin
+        io.emit('message', { content: msg.content, userType: msg.type });
+    });
 
-// Sử dụng Passport.js middleware
-app.use(passport.initialize());
-app.use(passport.session());
+    socket.on('admin message', (msg) => {
+        // Gửi tin nhắn từ admin tới client
+        io.emit('message', { content: msg.content, userType: msg.type });
+    });
 
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
 
-app.use(cors())
+const corsOptions ={
+    origin:'http://localhost:3000, http://localhost:3000/api/v1', 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+}
+app.use(cors(corsOptions));
 
-// Cấu hình CORS
-// app.use(cors({
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true // Cho phép truy cập cookie qua CORS
-// }));
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', process.env.REACT_URL);
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  next();
+});
+
 
 app.use(bodyParser.json())
 app.use(cookieParser())
@@ -51,6 +63,6 @@ app.use(express.urlencoded({ extended: true }))
 route(app)
 configLoginWithGG()
 
-app.listen(port, () => {
+server.listen(port, () => { 
   console.log(`Example app listening on port ${port}`)
 })

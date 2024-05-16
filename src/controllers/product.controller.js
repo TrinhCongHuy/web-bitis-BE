@@ -5,17 +5,22 @@ const ProductService = require('../service/ProductService')
 module.exports.createProduct = async (req, res) => {
     try {
         const {name, type, price, countInStock, rating, discount, description} = req.body
-        const image = req.file;
-        if ( !name || !image || !type || !price || !countInStock || !rating || !discount ) {
+        const images = req.files['images[]'];
+
+        if ( !name || !images || !type || !price || !countInStock || !rating || !discount ) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is require'
             })
         }
+
+        // Tạo mảng chứa đường dẫn hình ảnh
+        const imagePaths = images ? images.map(file => file.path) : [];
+
         const response = await ProductService.createProduct(
             {
                 name, type, price, countInStock, rating, discount, description,
-                image: image.path
+                images: imagePaths
             }
         )
         return res.status(200).json(response)
@@ -31,7 +36,7 @@ module.exports.updateProduct = async (req, res) => {
     try {
         const productId = req.params.id
         const {name, type, price, countInStock, rating, discount, description} = req.body
-        const image = req.file;
+        const images = req.files['images[]'];
         
         if (!productId) {
             return res.status(200).json({
@@ -40,8 +45,10 @@ module.exports.updateProduct = async (req, res) => {
             })
         }
 
+        const imagePaths = images ? images.map(file => file.path) : [];
+
         const response = await ProductService.updateProduct(productId, {
-            name, type, price, countInStock, rating, discount, description, image: image.path
+            name, type, price, countInStock, rating, discount, description, images: imagePaths
         })
         return res.status(200).json(response)
     }catch(e) {
@@ -50,6 +57,21 @@ module.exports.updateProduct = async (req, res) => {
         })
     }
 }
+
+// [PATCH] /update-comment/:id
+module.exports.updateCommentProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+
+        const response = await ProductService.updateCommentProduct(productId, req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        });
+    }
+}
+
 
 // [GET] /detail/:id
 module.exports.detailProduct = async (req, res) => {
@@ -119,7 +141,7 @@ module.exports.deleteManyProduct = async (req, res) => {
 module.exports.listProduct = async (req, res) => {
     try {
         const {page, limit, sort, filter} = req.query
-        const response = await ProductService.listProduct(Number(page) || 0, Number(limit) || 8, sort, filter)
+        const response = await ProductService.listProduct(Number(page) || 0, Number(limit), sort, filter)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({

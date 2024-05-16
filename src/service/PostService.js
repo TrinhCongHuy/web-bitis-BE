@@ -55,7 +55,7 @@ module.exports.updatePost = (id, data) => {
     })
 }
 
-// [PATCH] /update/:id
+// [PATCH] /update-comment/:id
 module.exports.updateCommentPost = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -156,10 +156,10 @@ module.exports.deleteManyPost = (ids) => {
 }
 
 // [GET] /
-module.exports.listPost = () => {
+module.exports.listPost = (limit) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const posts = await Post.find();
+            const posts = await Post.find().limit(limit);
 
             resolve({
                 status: 'OK',
