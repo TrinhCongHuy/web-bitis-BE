@@ -141,7 +141,7 @@ module.exports.deleteManyPost = async (req, res) => {
 module.exports.listPost = async (req, res) => {
     try {
         const {limit} = req.query
-        const response = await PostService.listPost(Number(limit) || 3)
+        const response = await PostService.listPost(Number(limit))
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({

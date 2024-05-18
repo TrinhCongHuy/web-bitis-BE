@@ -4,9 +4,9 @@ const sendMailHelper = require('../helpers/sendMail')
 
 
 
-
 // [POST] /create
 module.exports.createOrder = (newOrder) => {
+    console.log('newOrder', newOrder)
     return new Promise(async (resolve, reject) => {
         const { orderItems, shippingAddress, paymentMethod, shippingPrice, totalPay, user, deliveryMethod, isPaid, paidAt, email } = newOrder;
         try {

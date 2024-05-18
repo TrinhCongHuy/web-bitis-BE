@@ -6,6 +6,10 @@ const couponSchema = new mongoose.Schema({
     count: Number,
     image: String,
     description: String,
+    usedCount: {
+        type: Number,
+        default: 0
+    },
     expireAt: { 
         type: Date,
         default: null

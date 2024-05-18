@@ -130,6 +130,50 @@ module.exports.loginUser = async (infoUser) => {
     })
 }
 
+// Login by Google
+module.exports.loginByGG = async (typeAcc, dataRaw) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await User.findOne(
+                {
+                    email: dataRaw.email,
+                    type: typeAcc
+                }
+            )
+            if (!user) {
+                user = new User({
+                    name: dataRaw.fullName,
+                    email: dataRaw.email,
+                    type: typeAcc,
+                    avatar: dataRaw.avatar,
+                })
+                await user.save()
+            } 
+            
+            // access_token
+            const access_token = await generalAccessToken({
+                id: user._id,
+                isAdmin: user.isAdmin
+            })
+
+            // refresh_token
+            const refresh_token = await generalRefreshToken({
+                id: user._id,
+                isAdmin: user.isAdmin
+            })
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                access_token,
+                refresh_token
+            })
+            
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
+
 // [PATCH] /update-user/:id
 module.exports.updateUser = (id, data) => {
     return new Promise(async (resolve, reject) => {
