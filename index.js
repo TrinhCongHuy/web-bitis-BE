@@ -21,37 +21,8 @@ app.use((req, res, next) => {
 
 app.use(passport.initialize());
 
-// passport.use(new GoogleStrategy({
-//   clientID: process.env.GOOGLE_CLIENT_ID,
-//   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//   callbackURL: "http://localhost:3001/api/v1/auth/google/callback",
-// },
-//   function(accessToken, refreshToken, profile, cb) {
-//     // Here, you would typically find or create a user in your database
-//     return cb(null, profile);
-//   }
-// ));
-
-// Serialize user into a JWT
-// const generateToken = (user) => {
-//   return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
-// };
-
-// app.get('/api/v1/auth/google',
-//   passport.authenticate('google', { scope: ['profile', 'email'] })
-// );
-
-// app.get('/api/v1/auth/google/callback',
-//   passport.authenticate('google', { failureRedirect: '/' }),
-//   (req, res) => {
-//     // Successful authentication, generate a JWT
-//     const token = generateToken({ id: req.user.id, displayName: req.user.displayName, emails: req.user.emails });
-//     res.redirect(`http://localhost:3000?token=${token}`);
-//   }
-// );
-
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: process.env.REACT_URL, 
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true
 }));

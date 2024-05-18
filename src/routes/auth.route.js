@@ -5,17 +5,30 @@ require('dotenv').config()
 
 
 // Login with google
-router.get("/google", passport.authenticate("google", { scope: ["email", "profile"]}));
+router.get("/google", passport.authenticate("google", { scope: ["email", "profile"], session: false }));
 
-router.get("/google/callback", (req, res, next) => 
-  {
-    passport.authenticate("google", (err, profile) => {
-      console.log('profile', profile)
-      req.user = profile
-      next()
-    })(req, res, next)
-  }, (req, res) => {
-    res.redirect(process.env.REACT_URL)
+router.get("/google/callback", 
+  (req, res, next) => {
+    passport.authenticate("google", (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return res.redirect('/');
+      }
+      req.user = user;
+      next();
+    })(req, res, next);
+  },
+  (req, res) => {
+    const { access_token, refresh_token } = req.user;
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: false, // Set to true if using HTTPS
+      sameSite: 'strict' // Adjust this as needed
+    });
+    // res.redirect(`http://localhost:3000/auth/success?access_token=${access_token}`);
+    res.redirect(process.env.REACT_URL + `/auth/success?access_token=${access_token}`);
   }
 );
 

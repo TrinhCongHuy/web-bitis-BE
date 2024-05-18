@@ -96,18 +96,19 @@ module.exports.loginUser = async (req, res) => {
 // [GET] /auth/login
 module.exports.upsertUserSocialMedia = async (typeAcc, dataRaw) => {
     try {
-        const response = await UserService.loginByGG(typeAcc, dataRaw)
-        const { refresh_token, ...newRepose } = response
-        res.cookie('refresh_token', refresh_token, {
-            httpOnly: true,
-            secure: false, // Chỉ gửi cookie qua kết nối HTTPS để đảm bảo an toàn
-            sameSite: 'strict' // Chỉ gửi cookie khi yêu cầu tới cùng một trang web
-        });
-        return res.status(200).json(newRepose)
-    }catch(error) {
-        console.log(error)
+        const response = await UserService.loginByGG(typeAcc, dataRaw);
+        const { refresh_token, access_token, ...newResponse } = response;
+        
+        return {
+            ...newResponse,
+            access_token,
+            refresh_token,
+        };
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ status: 'ERROR', message: 'An error occurred during login.' });
     }
-}
+};
 
 // [PATCH] /update-user/:id
 module.exports.updateUser = async (req, res) => {
