@@ -4,10 +4,10 @@ const ProductService = require('../service/ProductService')
 // [POST] /create
 module.exports.createProduct = async (req, res) => {
     try {
-        const {name, type, price, countInStock, rating, discount, description} = req.body
+        const {name, type, price, sizes, rating, discount, description} = req.body
         const images = req.files['images[]'];
 
-        if ( !name || !images || !type || !price || !countInStock || !rating || !discount ) {
+        if ( !name || !images || !type || !price || !sizes || !rating || !discount ) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is require'
@@ -19,7 +19,7 @@ module.exports.createProduct = async (req, res) => {
 
         const response = await ProductService.createProduct(
             {
-                name, type, price, countInStock, rating, discount, description,
+                name, type, price, sizes, rating, discount, description,
                 images: imagePaths
             }
         )
@@ -45,11 +45,17 @@ module.exports.updateProduct = async (req, res) => {
             })
         }
 
-        const imagePaths = images ? images.map(file => file.path) : [];
+        let response
 
-        const response = await ProductService.updateProduct(productId, {
-            name, type, price, countInStock, rating, discount, description, images: imagePaths
-        })
+        if (images) {
+            const imagePaths = images ? images.map(file => file.path) : [];
+            response = await ProductService.updateProduct(productId, {
+                name, type, price, countInStock, rating, discount, description, images: imagePaths
+            })
+        }else {
+            response = await ProductService.updateProduct(productId, req.body)
+        }
+        
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -58,12 +64,23 @@ module.exports.updateProduct = async (req, res) => {
     }
 }
 
-// [PATCH] /update-comment/:id
-module.exports.updateCommentProduct = async (req, res) => {
+// [POST] /add-comment/:id
+module.exports.addCommentProduct = async (req, res) => {
     try {
         const productId = req.params.id;
+        const {content, rating, userId} = req.body
+        const images = req.files['images[]'];
+        const imagePaths = images ? images.map(file => file.path) : [];
 
-        const response = await ProductService.updateCommentProduct(productId, req.body);
+        const updateData = {
+            content,
+            rating,
+            images: imagePaths,
+            userId
+        };
+        
+        const response = await ProductService.addCommentProduct(productId, updateData);
+
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
@@ -119,7 +136,6 @@ module.exports.deleteProduct = async (req, res) => {
 module.exports.deleteManyProduct = async (req, res) => {
     try {
         const productIds = req.body.ids
-        console.log('productIds', productIds)
         
         if (!productIds) {
             return res.status(200).json({

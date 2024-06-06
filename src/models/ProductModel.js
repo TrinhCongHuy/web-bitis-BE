@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema({
-    id: String,
-    body: String,
-    username: String,
-    userId: String,
-    parentId: { type: String, default: null },
+    content: String,
+    rating: Number,
+    images: [],
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     createdAt: Date,
 });
 
@@ -16,13 +18,15 @@ const productSchema = new mongoose.Schema({
     price: Number,
     discount: Number,
     sizes: [{
-        sizeType: Number, 
+        size: Number, 
         quantity: Number,
+        sold: {
+            type: Number,
+            default: 0
+        },
     }],
-    countInStock: Number,
     rating: Number,
     description: String,
-    sold: Number,
     brand: String,
     comments: [commentSchema],
     status: {

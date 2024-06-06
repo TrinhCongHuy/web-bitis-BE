@@ -6,7 +6,6 @@ const sendMailHelper = require('../helpers/sendMail')
 
 // [POST] /create
 module.exports.createOrder = (newOrder) => {
-    console.log('newOrder', newOrder)
     return new Promise(async (resolve, reject) => {
         const { orderItems, shippingAddress, paymentMethod, shippingPrice, totalPay, user, deliveryMethod, isPaid, paidAt, email } = newOrder;
         try {
@@ -44,22 +43,31 @@ module.exports.createOrder = (newOrder) => {
                 <li>
                     <p><strong>Sản phẩm ${index + 1}:</strong></p>
                     <p>Tên sản phẩm: ${item.name}</p>
+                    <p>Size: ${item.size}</p>
                     <p>Số lượng: ${item.amount}</p>
                     <p>Giá tiền: ${item.price} VNĐ</p>
                 </li>
                 `;
             });
-
             html += `</ul>`;
                 
             sendMailHelper.sendMail(email, subject, html)
+
+            for (const itemProduct of createdOrder.orderItems) {
+                const product = await Product.findOne({ _id: itemProduct?.product });
+
+                if (product) {
+                    product.sizes.find(item => item.size === itemProduct.size).quantity -= itemProduct.amount
+                    product.sizes.find(item => item.size === itemProduct.size).sold += itemProduct.amount
+                    await product.save();
+                }
+            }
 
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
                 data: createdOrder
             });
-
         } catch (error) {
             reject(error);
         }
@@ -123,14 +131,13 @@ module.exports.deleteOrder = async (orderId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const orderDetail = await Order.findOne({ _id: orderId });
-
             if (orderDetail) {
-                for (const item of orderDetail.orderItems) {
-                    const product = await Product.findOne({ _id: item?.product });
+                for (const itemProduct of orderDetail.orderItems) {
+                    const product = await Product.findOne({ _id: itemProduct?.product });
 
                     if (product) {
-                        product.countInStock += item.amount;
-                        product.sold -= item.amount;
+                        product.sizes.find(item => item.size === itemProduct.size).quantity += itemProduct.amount
+                        product.sizes.find(item => item.size === itemProduct.size).sold -= itemProduct.amount
                         await product.save();
                     }
                 }

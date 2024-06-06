@@ -11,7 +11,6 @@ module.exports.listProductCart = async (userId) => {
 
             if (cart) {
                 const productsInCart = cart.products;
-
                 const detailedProducts = [];
 
                 for (const product of productsInCart) {
@@ -46,31 +45,10 @@ module.exports.listProductCart = async (userId) => {
     });
 };
 
-
-// [GET] /countProductCart
-module.exports.countProductCart = async (userId) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const userCart  = await Cart.countDocuments({user_id: userId})
-
-            const countProductsInCart = userCart.products.length;
-
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                data: countProductsInCart
-            });
-        
-        } catch (error) {
-            reject(error);
-        }
-    });
-};
-
 // [POST] /addProduct
 module.exports.createProductCart = (newProduct) => {
     return new Promise(async (resolve, reject) => {
-        const { user_id, product_id, quantity } = newProduct;
+        const { user_id, product_id, quantity, size } = newProduct;
         try {
             let cart = await Cart.findOne({
                 user_id: user_id
@@ -85,7 +63,7 @@ module.exports.createProductCart = (newProduct) => {
             if (productExistInCart) {
                 productExistInCart.quantity += quantity;
             } else {
-                cart.products.push({ product_id, quantity });
+                cart.products.push({ product_id, quantity, size });
             }
 
             await cart.save();
@@ -134,7 +112,6 @@ module.exports.deleteProductInCart = async (id, userId) => {
             const cart = await Cart.findOne({ user_id: userId });
 
             cart.products = cart.products.filter(product => product.product_id !== id);
-
             await cart.save();
 
             resolve({
@@ -154,7 +131,6 @@ module.exports.deleteManyProductInCart = async (ids, userId) => {
             const cart = await Cart.findOne({ user_id: userId });
 
             cart.products = cart.products.filter(product => !ids.includes(product.product_id));
-
             await cart.save();
 
             resolve({

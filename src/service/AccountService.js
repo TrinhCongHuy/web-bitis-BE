@@ -202,14 +202,6 @@ module.exports.deleteManyAccount = (ids) => {
                     _id: ids 
                 }
             )
-            // await Account.updateMany(
-            //     {
-            //         _id: { $in: ids } 
-            //     },
-            //     {
-            //         deleted: true
-            //     }
-            // )
 
             resolve({
                 status: 'OK',

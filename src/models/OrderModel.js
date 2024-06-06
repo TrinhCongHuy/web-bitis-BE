@@ -7,6 +7,7 @@ const orderSchema = new mongoose.Schema({
             amount: Number,
             discount: Number,
             image: String,
+            size: Number,
             price: Number,
             quantity: Number,
             totalPrice: Number,
@@ -38,6 +39,10 @@ const orderSchema = new mongoose.Schema({
     },
     isPaid: Boolean,
     paidAt: Date,
+    status: {
+        type: String,
+        default: 'Chờ xác nhận'
+    },
     deliveryMethod: String,
     isDelivered: Boolean,
     deliveredAt: Date

@@ -5,16 +5,15 @@ const controller = require('../controllers/product.controller')
 const uploadCloud = require('../middleware/uploadToCloudinary')
 
 
-
-// router.post('/create', uploadCloud.single('image'), controller.createProduct)
 router.post('/create',
     uploadCloud.fields([{name: 'images[]', maxCount: 4}]), 
     controller.createProduct
 )
 
 router.patch('/update/:id', uploadCloud.fields([{name: 'images[]', maxCount: 4}]), controller.updateProduct)
-router.patch('/update-comment/:id', 
-    controller.updateCommentProduct
+router.post('/add-comment/:id', 
+    uploadCloud.fields([{name: 'images[]', maxCount: 4}]),
+    controller.addCommentProduct
 )
 router.get('/detail/:id', controller.detailProduct)
 router.delete('/delete/:id', controller.deleteProduct)

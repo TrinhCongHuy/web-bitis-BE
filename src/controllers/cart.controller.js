@@ -14,20 +14,6 @@ module.exports.listProductCart = async (req, res) => {
     }
 }
 
-
-// [GET] /countProductCart
-module.exports.countProductCart = async (req, res) => {
-    try {
-        const userId = req.params.id
-        const response = await CartService.countProductCart(userId)
-        return res.status(200).json(response)
-    }catch(e) {
-        return res.status(404).json({
-            message: e
-        })
-    }
-}
-
 // [POST] /addProduct
 module.exports.createProductCart = async (req, res) => {
     try {
@@ -88,7 +74,6 @@ module.exports.deleteProductInCart = async (req, res) => {
 module.exports.deleteManyProductInCart = async (req, res) => {
     try {
         const { userId } = req;
-        
         const response = await CartService.deleteManyProductInCart(req.body, userId)
         return res.status(200).json(response)
     }catch(e) {

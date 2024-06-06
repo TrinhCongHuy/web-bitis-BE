@@ -1,5 +1,6 @@
 const userRoute = require('./user.route')
 const productRoute = require('./product.route')
+const categoryRoute = require('./category.route')
 const cartRoute = require('./cart.route')
 const orderRoute = require('./order.route')
 const paymentRoute = require('./payment.route')
@@ -17,6 +18,7 @@ module.exports = (app) => {
     const version = "/api/v1"
     app.use(version + '/', userRoute)
     app.use(version + '/products', productRoute)
+    app.use(version + '/categories', categoryRoute)
     app.use(version + '/carts', cartRoute)
     app.use(version + '/order', orderRoute)
     app.use(version + '/payment', paymentRoute)

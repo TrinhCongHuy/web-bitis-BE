@@ -3,7 +3,7 @@ const Product = require("../models/ProductModel")
 // [POST] /create
 module.exports.createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
-        const {name, images, type, price, countInStock, rating, discount, description} = newProduct
+        const {name, images, type, price, sizes, rating, discount, description} = newProduct
         try {
             const checkProduct = await Product.findOne({
                 name: name
@@ -16,7 +16,7 @@ module.exports.createProduct = (newProduct) => {
                 })
             }else {
                 const createProduct = await Product.create({
-                    name, images, type, price, countInStock, rating, discount, description, sold: 0
+                    name, images, type, price, sizes, rating, discount, description
                 })
                 if (createProduct) {
                     resolve({
@@ -67,28 +67,21 @@ module.exports.updateProduct = (id, data) => {
     })
 }
 
-// [PATCH] /update-comment/:id
-module.exports.updateCommentProduct = (id, data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            await Product.findByIdAndUpdate(
-                {_id: id},
-                data
-            );
+// [POST] /add-comment/:id
+module.exports.addCommentProduct = async (productId, newComment) => {
+    const { content, userId, rating, images } = newComment;
 
-            const newProduct = await Product.findOne({_id: id})
+    try {
+        const comment = { content, userId, rating, images, createdAt: new Date() };
+        await Product.findByIdAndUpdate(productId, {
+            $push: { comments: comment }
+        }, { new: true });
 
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                data: newProduct
-            })
-            
-        }catch(error) {
-            reject(error)
-        }
-    })
-}
+        res.status(201).send('Comment added successfully.');
+    } catch (error) {
+        res.status(500).send('Error adding comment: ' + error.message);
+    }
+};
 
 // [GET] /detail/:id
 module.exports.detailProduct = (id) => {
@@ -154,7 +147,6 @@ module.exports.deleteProduct = (id) => {
 module.exports.deleteManyProduct = (ids) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log('ids', ids)
             await Product.deleteMany(
                 {
                     _id: ids 

@@ -80,8 +80,8 @@ module.exports.loginUser = async (req, res) => {
         const response = await UserService.loginUser(req.body)
         const { refresh_token, ...newRepose } = response
         res.cookie('refresh_token', refresh_token, {
-            httpOnly: true,
-            secure: false, // Chỉ gửi cookie qua kết nối HTTPS để đảm bảo an toàn
+            httpOnly: true, // Ngăn JavaScript truy cập vào cookie, giảm thiểu nguy cơ bị đánh cắp qua XSS.
+            secure: true, // Chỉ gửi cookie qua kết nối HTTPS để đảm bảo an toàn
             sameSite: 'strict' // Chỉ gửi cookie khi yêu cầu tới cùng một trang web
         });
         return res.status(200).json(newRepose)
@@ -105,7 +105,6 @@ module.exports.upsertUserSocialMedia = async (typeAcc, dataRaw) => {
             refresh_token,
         };
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ status: 'ERROR', message: 'An error occurred during login.' });
     }
 };
@@ -113,24 +112,62 @@ module.exports.upsertUserSocialMedia = async (typeAcc, dataRaw) => {
 // [PATCH] /update-user/:id
 module.exports.updateUser = async (req, res) => {
     try {
-        const userId = req.params.id
-        const data = req.body
+        const userId = req.params.id;
+        const { name, email, phone, password, confirmPassword } = req.body;
+        const avatar = req.file;
+        console.log(req.body)
         
         if (!userId) {
-            return res.status(200).json({
+            return res.status(400).json({
                 status: 'ERR',
-                message: 'The userId id required'
-            })
+                message: 'The userId is required'
+            });
         }
 
-        const response = await UserService.updateUser(userId, data)
-        return res.status(200).json(response)
-    }catch(e) {
+        if ((password && !confirmPassword) || (!password && confirmPassword)) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'Please provide both password and confirmPassword if one of them is provided'
+            });
+        }
+
+        const updateFields = {};
+        if (name) updateFields.name = name;
+        if (email) updateFields.email = email;
+        if (phone) updateFields.phone = phone;
+        if (password) updateFields.password = password;
+        if (confirmPassword) updateFields.confirmPassword = confirmPassword;
+        if (avatar) updateFields.avatar = avatar.path;
+
+        const response = await UserService.updateUser(userId, updateFields);
+        return res.status(200).json(response);
+    } catch (e) {
         return res.status(404).json({
             message: e
-        })
+        });
     }
-}
+};
+
+// [PATCH] /update-address/:id
+module.exports.updateAddressUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        
+        if (!userId) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'The userId is required'
+            });
+        }
+
+        const response = await UserService.updateAddressUser(userId, req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        });
+    }
+};
 
 // [DELETE] /delete-user/:id
 module.exports.deleteUser = async (req, res) => {
@@ -231,7 +268,6 @@ module.exports.logoutUser = async (req, res) => {
         })
     }
 }
-
 
 // [POST] /forgot-password/
 module.exports.forgotPasswordPost = async (req, res) => {

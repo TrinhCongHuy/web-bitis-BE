@@ -19,25 +19,7 @@ module.exports.createOrder = async (req, res) => {
             });
         }
 
-        const orderData = {
-            orderItems,
-            shippingAddress: {
-                name,
-                address,
-                specificLocation,
-                phone
-            },
-            paymentMethod,
-            shippingPrice,
-            totalPay,
-            user,
-            deliveryMethod,
-            isPaid, 
-            paidAt,
-            email
-        };
-
-        const response = await OrderService.createOrder(orderData);
+        const response = await OrderService.createOrder(req.body);
         return res.status(200).json(response);
     } catch (error) {
         console.error('Lỗi khi tạo đơn hàng:', error);

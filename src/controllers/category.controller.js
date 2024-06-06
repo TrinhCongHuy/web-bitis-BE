@@ -1,8 +1,8 @@
-const TopicService = require('../service/TopicService')
+const CategoryService = require('../service/CategoryService')
 
 
 // [POST] /create
-module.exports.createTopic = async (req, res) => {
+module.exports.createCategory = async (req, res) => {
     try {
         const {name} = req.body
         if ( !name ) {
@@ -11,7 +11,7 @@ module.exports.createTopic = async (req, res) => {
                 message: 'The input is require'
             })
         }
-        const response = await TopicService.createTopic(req.body)
+        const response = await CategoryService.createCategory(req.body)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -21,19 +21,19 @@ module.exports.createTopic = async (req, res) => {
 }
 
 // [PATCH] /update/:id
-module.exports.updateTopic = async (req, res) => {
+module.exports.updateCategory = async (req, res) => {
     try {
-        const topicId = req.params.id
+        const categoryId = req.params.id
         const data = req.body
         
-        if (!topicId) {
+        if (!categoryId) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The topicId id required'
+                message: 'The categoryId id required'
             })
         }
 
-        const response = await TopicService.updateTopic(topicId, data)
+        const response = await CategoryService.updateCategory(categoryId, data)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -43,18 +43,18 @@ module.exports.updateTopic = async (req, res) => {
 }
 
 // [GET] /detail/:id
-module.exports.detailTopic = async (req, res) => {
+module.exports.detailCategory = async (req, res) => {
     try {
-        const topicId = req.params.id
+        const categoryId = req.params.id
         
-        if (!topicId) {
+        if (!categoryId) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The topicId id required'
+                message: 'The categoryId id required'
             })
         }
 
-        const response = await TopicService.detailTopic(topicId)
+        const response = await CategoryService.detailCategory(categoryId)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -64,18 +64,18 @@ module.exports.detailTopic = async (req, res) => {
 }
 
 // [PATCH] /delete/:id
-module.exports.deleteTopic = async (req, res) => {
+module.exports.deleteCategory = async (req, res) => {
     try {
-        const topicId = req.params.id
+        const categoryId = req.params.id
         
-        if (!topicId) {
+        if (!categoryId) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The topicId id required'
+                message: 'The categoryId id required'
             })
         }
 
-        const response = await TopicService.deleteTopic(topicId)
+        const response = await CategoryService.deleteCategory(categoryId)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -85,18 +85,18 @@ module.exports.deleteTopic = async (req, res) => {
 }
 
 // [PATCH] /delete-many
-module.exports.deleteManyTopic = async (req, res) => {
+module.exports.deleteManyCategory = async (req, res) => {
     try {
-        const topicIds = req.body.ids
+        const categoryIds = req.body.ids
         
-        if (!topicIds) {
+        if (!categoryIds) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The topicId id required'
+                message: 'The categoryId id required'
             })
         }
 
-        const response = await TopicService.deleteManyTopic(topicIds)
+        const response = await CategoryService.deleteManyCategory(categoryIds)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({
@@ -106,9 +106,9 @@ module.exports.deleteManyTopic = async (req, res) => {
 }
 
 // [GET] /
-module.exports.listTopic = async (req, res) => {
+module.exports.listCategory = async (req, res) => {
     try {
-        const response = await TopicService.listTopic()
+        const response = await CategoryService.listCategory()
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({

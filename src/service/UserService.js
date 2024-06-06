@@ -178,6 +178,7 @@ module.exports.loginByGG = async (typeAcc, dataRaw) => {
 module.exports.updateUser = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
+            const {confirmPassword, password} = data
             const user = await User.findOne({
                 _id: id
             })
@@ -187,6 +188,54 @@ module.exports.updateUser = (id, data) => {
                     message: 'The user is not defined',
                 })
             }
+
+            if (confirmPassword) {
+                const passwordMatch = bcrypt.compareSync(confirmPassword, user.password);
+                if (!passwordMatch) {
+                    return resolve({
+                        status: 'ERR',
+                        message: 'Mật khẩu cũ sai. Vui lòng nhập lại!!!',
+                    });
+                }
+            }
+            
+            const hash = bcrypt.hashSync(password, 10)
+            
+            await User.updateOne(
+                {
+                    _id: id
+                },
+                {...data, password: hash}
+            )
+
+            const newUser = await User.findOne({_id: id})
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: newUser
+            })
+            
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
+
+// [PATCH] /update-address/:id
+module.exports.updateAddressUser = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const user = await User.findOne({
+                _id: id
+            })
+            if (!user) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The user is not defined',
+                })
+            }
+
             await User.updateOne(
                 {
                     _id: id
