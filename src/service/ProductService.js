@@ -214,22 +214,3 @@ module.exports.listProduct = (page, limit, sort, filter) => {
         }
     })
 }
-
-// [GET] /type-product
-module.exports.typeProduct = () => {
-    return new Promise(async (resolve, reject) => {
-        try {            
-            
-            const types = await Product.distinct('type');
-
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                data: types
-            })
-            
-        }catch(error) {
-            reject(error)
-        }
-    })
-}

@@ -19,10 +19,6 @@ router.get('/detail/:id', controller.detailProduct)
 router.delete('/delete/:id', controller.deleteProduct)
 router.post('/delete-many', controller.deleteManyProduct)
 router.get('/', controller.listProduct)
-router.get('/type-product', controller.typeProduct)
-
-
-
 
 
 module.exports = router

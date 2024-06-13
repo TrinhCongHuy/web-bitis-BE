@@ -165,15 +165,3 @@ module.exports.listProduct = async (req, res) => {
         })
     }
 }
-
-// [GET] /type-product
-module.exports.typeProduct = async (req, res) => {
-    try {
-        const response = await ProductService.typeProduct()
-        return res.status(200).json(response)
-    }catch(e) {
-        return res.status(404).json({
-            message: e
-        })
-    }
-}
