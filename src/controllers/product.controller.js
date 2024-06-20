@@ -31,6 +31,20 @@ module.exports.createProduct = async (req, res) => {
     }
 }
 
+// [PUT] /updateStatusProduct
+module.exports.updateStatusProduct = async (req, res) => {
+    try {
+        const productId = req.params.id
+        console.log(productId)
+        const response = await ProductService.updateStatusProduct(productId)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 // [PATCH] /update/:id
 module.exports.updateProduct = async (req, res) => {
     try {
@@ -158,6 +172,18 @@ module.exports.listProduct = async (req, res) => {
     try {
         const {page, limit, sort, filter} = req.query
         const response = await ProductService.listProduct(Number(page) || 0, Number(limit), sort, filter)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+// [GET] /totalProduct
+module.exports.totalProduct = async (req, res) => {
+    try {
+        const response = await ProductService.totalProduct()
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({

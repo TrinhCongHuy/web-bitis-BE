@@ -32,6 +32,35 @@ module.exports.createProduct = (newProduct) => {
     })
 }
 
+// [PUT] /updateStatusProduct
+module.exports.updateStatusProduct = async (productId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const product = await Product.findById({
+                _id: productId
+            });
+
+            if (!product) {
+                return {
+                    status: 'ERROR',
+                    message: 'Không tìm thấy sản phẩm'
+                };
+            }
+            product.status = !product.status;
+            await product.save();
+
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: product
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
 // [PATCH] /update/:id
 module.exports.updateProduct = (id, data) => {
     return new Promise(async (resolve, reject) => {
@@ -171,7 +200,8 @@ module.exports.listProduct = (page, limit, sort, filter) => {
             const totalProduct = await Product.countDocuments()
             if (filter) {
                 const label = filter[0]
-                const productsFilter = await Product.find({ [label]: { '$regex': filter[1]} }).limit(limit).skip(page * limit)
+                
+                const productsFilter = await Product.find({status: true}, { [label]: { '$regex': filter[1]} }).limit(limit).skip(page * limit)
 
                 resolve({
                     status: 'OK',
@@ -186,7 +216,7 @@ module.exports.listProduct = (page, limit, sort, filter) => {
             if (sort) {
                 const objectSort = {}
                 objectSort[sort[1]] = sort[0]
-                const productsSort = await Product.find().limit(limit).skip(page * limit).sort(objectSort)
+                const productsSort = await Product.find({status: true}).limit(limit).skip(page * limit).sort(objectSort)
 
                 resolve({
                     status: 'OK',
@@ -207,6 +237,24 @@ module.exports.listProduct = (page, limit, sort, filter) => {
                 total: totalProduct,
                 pageCurrent: Number(page + 1),
                 totalPage: Math.ceil(totalProduct / limit)
+            })
+            
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
+
+// [GET] /totalProduct
+module.exports.totalProduct = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const total = await Product.countDocuments({deleted: false})
+
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: total
             })
             
         }catch(error) {

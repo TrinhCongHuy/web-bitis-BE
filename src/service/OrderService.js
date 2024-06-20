@@ -100,6 +100,32 @@ module.exports.listProductOrder = async (userId) => {
     });
 };
 
+// [PUT] /updateOrder
+module.exports.updateOrder = async (orderId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const orders = await Order.findByIdAndUpdate({
+                _id: orderId
+            }, {status: 'Đã xác nhận'});
+
+            if (orders) {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: orders
+                });
+            } else {
+                resolve({
+                    status: 'ERROR',
+                    message: 'Cart not found for the user'
+                });
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 // [GET] /orderDetail
 module.exports.orderDetail = async (userId) => {
     return new Promise(async (resolve, reject) => {
@@ -131,7 +157,10 @@ module.exports.deleteOrder = async (orderId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const orderDetail = await Order.findOne({ _id: orderId });
+
             if (orderDetail) {
+                await Order.findByIdAndDelete({ _id: orderId });
+
                 for (const itemProduct of orderDetail.orderItems) {
                     const product = await Product.findOne({ _id: itemProduct?.product });
 
@@ -142,7 +171,7 @@ module.exports.deleteOrder = async (orderId) => {
                     }
                 }
 
-                await Order.deleteOne({ _id: orderId });
+                // await Order.findByIdAndDelete({ _id: orderId });
 
                 resolve({
                     status: 'OK',

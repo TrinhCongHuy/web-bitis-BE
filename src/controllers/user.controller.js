@@ -14,6 +14,18 @@ module.exports.listUser = async (req, res) => {
     }
 }
 
+// [GET] /totalUser
+module.exports.totalUser = async (req, res) => {
+    try {
+        const response = await UserService.totalUser()
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 // [GET] /user/:id
 module.exports.getUser = async (req, res) => {
     try {
@@ -30,7 +42,7 @@ module.exports.getUser = async (req, res) => {
 // [POST] /sing-up
 module.exports.createUser = async (req, res) => {
     try {
-        const { name , email, password, confirmPassword, phone } = req.body
+        const { name, email, password, confirmPassword, phone } = req.body
         const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const isCheckEmail = regex.test(email)
         if (!name || !email|| !password|| !confirmPassword ) {
@@ -115,7 +127,6 @@ module.exports.updateUser = async (req, res) => {
         const userId = req.params.id;
         const { name, email, phone, password, confirmPassword } = req.body;
         const avatar = req.file;
-        console.log(req.body)
         
         if (!userId) {
             return res.status(400).json({

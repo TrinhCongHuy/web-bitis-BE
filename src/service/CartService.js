@@ -22,6 +22,7 @@ module.exports.listProductCart = async (userId) => {
                             name: productDetail.name,
                             images: productDetail.images,
                             price: productDetail.price,
+                            size: product.size,
                             quantity: product.quantity,
                             discount: productDetail.discount
                         });

@@ -43,6 +43,19 @@ module.exports.listProductOrder = async (req, res) => {
     }
 }
 
+// [PUT] /updateOrder
+module.exports.updateOrder = async (req, res) => {
+    try {
+        const orderId = req.params.id
+        const response = await OrderService.updateOrder(orderId)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 // [GET] /orderDetail
 module.exports.orderDetail = async (req, res) => {
     try {
@@ -72,8 +85,8 @@ module.exports.getAllOrder = async (req, res) => {
 // [DELETE] /deleteOrder/:id
 module.exports.deleteOrder = async (req, res) => {
     try {
-        const userId = req.params.id
-        const response = await OrderService.deleteOrder(userId)
+        const orderId = req.params.id
+        const response = await OrderService.deleteOrder(orderId)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({

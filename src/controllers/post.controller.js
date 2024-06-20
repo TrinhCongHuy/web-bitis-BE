@@ -34,7 +34,6 @@ module.exports.updatePost = async (req, res) => {
     try {
         const postId = req.params.id;
         const { title, topic, description, content } = req.body;
-        const image = req.file;
         let updateFields = {};
 
         if (title) updateFields.title = title;
@@ -142,6 +141,19 @@ module.exports.listPost = async (req, res) => {
     try {
         const {limit} = req.query
         const response = await PostService.listPost(Number(limit))
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+
+// [GET] /totalPost
+module.exports.totalPost = async (req, res) => {
+    try {
+        const response = await PostService.totalPost()
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({

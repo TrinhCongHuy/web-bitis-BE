@@ -197,18 +197,17 @@ module.exports.updateUser = (id, data) => {
                         message: 'Mật khẩu cũ sai. Vui lòng nhập lại!!!',
                     });
                 }
+                const hash = bcrypt.hashSync(password, 10)
+                data["password"] = hash;
             }
             
-            const hash = bcrypt.hashSync(password, 10)
-            
-            await User.updateOne(
+            const newUser = await User.findByIdAndUpdate(
                 {
                     _id: id
                 },
-                {...data, password: hash}
+                data,
+                {new: true}
             )
-
-            const newUser = await User.findOne({_id: id})
 
             resolve({
                 status: 'OK',
@@ -440,6 +439,24 @@ module.exports.resetPasswordPost = async (data) => {
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
+            })
+            
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
+
+// [GET] /totalUser
+module.exports.totalUser = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const total = await User.countDocuments({deleted: false})
+
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: total
             })
             
         }catch(error) {

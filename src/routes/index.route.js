@@ -29,7 +29,4 @@ module.exports = (app) => {
     app.use(version + '/role', roleRoute)
     app.use(version + '/chat', chatRoute)
     app.use(version + '/coupon', couponRoute)
-
-
-
 }

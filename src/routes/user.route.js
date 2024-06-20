@@ -22,6 +22,8 @@ router.get('/list-user', controller.listUser)
 router.get('/user/:id', controller.getUser)
 router.delete('/delete-user/:id', controller.deleteUser)
 router.get('/detail-user/:id', controller.detailUser)
+router.get('/totalUser', controller.totalUser)
+
 
 
 module.exports = router

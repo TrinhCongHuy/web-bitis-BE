@@ -172,3 +172,21 @@ module.exports.listPost = (limit) => {
         }
     })
 }
+
+// [GET] /totalPost
+module.exports.totalPost = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const total = await Post.countDocuments({deleted: false})
+
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: total
+            })
+            
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
