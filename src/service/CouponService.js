@@ -159,7 +159,7 @@ module.exports.detailCoupon = (id) => {
 module.exports.listCoupon = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const coupons = await Coupon.find();
+            const coupons = await Coupon.find({ deleted: false });
 
             resolve({
                 status: 'OK',

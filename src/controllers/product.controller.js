@@ -170,8 +170,8 @@ module.exports.deleteManyProduct = async (req, res) => {
 // [GET] /
 module.exports.listProduct = async (req, res) => {
     try {
-        const {page, limit, sort, filter} = req.query
-        const response = await ProductService.listProduct(Number(page) || 0, Number(limit), sort, filter)
+        const {page, limit, sortKey, sortValue, filter} = req.query
+        const response = await ProductService.listProduct(Number(page) || 0, Number(limit), sortKey, sortValue, filter)
         return res.status(200).json(response)
     }catch(e) {
         return res.status(404).json({

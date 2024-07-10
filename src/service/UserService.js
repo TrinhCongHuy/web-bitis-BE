@@ -5,6 +5,7 @@ const generate = require('../helpers/generate')
 const sendMailHelper = require('../helpers/sendMail')
 const { generalAccessToken , generalRefreshToken} = require('./JwtService')
 
+
 // [GET] /list-user
 module.exports.listUser = () => {
     return new Promise(async (resolve, reject) => {
