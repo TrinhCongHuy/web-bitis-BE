@@ -173,6 +173,25 @@ module.exports.listPost = (limit) => {
     })
 }
 
+// [GET] /topic/:slug
+module.exports.listPostTopic = (slug) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log('slug', slug)
+            const posts = await Post.find({ slug: slug});
+
+            console.log("posts", posts)
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: posts,
+            })
+        }catch(error) {
+            reject(error)
+        }
+    })
+}
+
 // [GET] /totalPost
 module.exports.totalPost = () => {
     return new Promise(async (resolve, reject) => {

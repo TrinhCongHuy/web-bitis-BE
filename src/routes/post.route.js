@@ -22,6 +22,8 @@ router.delete('/delete/:id', controller.deletePost)
 router.post('/delete-many', controller.deleteManyPost)
 router.get('/', controller.listPost)
 router.get('/totalPost', controller.totalPost)
+router.get('/:slug', controller.listPostTopic)
+
 
 
 

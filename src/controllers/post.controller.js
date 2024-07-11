@@ -150,6 +150,19 @@ module.exports.listPost = async (req, res) => {
 }
 
 
+// [GET] /topic/:slug
+module.exports.listPostTopic = async (req, res) => {
+    try {
+        const slug = req.params.slug
+        const response = await PostService.listPostTopic(slug)
+        return res.status(200).json(response)
+    }catch(e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 // [GET] /totalPost
 module.exports.totalPost = async (req, res) => {
     try {
