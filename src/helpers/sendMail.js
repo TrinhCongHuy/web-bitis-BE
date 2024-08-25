@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+require('dotenv').config()
 
 module.exports.sendMail = (email, subject, html) => {
     const transporter = nodemailer.createTransport({
@@ -21,7 +22,6 @@ module.exports.sendMail = (email, subject, html) => {
        console.log(error);
         } else {
           console.log('Email sent: ' + info.response);
-          // do something useful
         }
       });
 }
